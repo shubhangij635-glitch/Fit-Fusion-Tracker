@@ -1,0 +1,141 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="pro-dashboard">
+
+    <!-- HERO HEADER -->
+    <div class="hero-card">
+        <div>
+            <h2>Welcome back, {{ current_user.username }} 👋</h2>
+            <p>Your fitness journey is on track</p>
+        </div>
+        <div class="hero-stats">
+            <div>
+                <span>{{ current_user.steps }}</span>
+                <small>Steps</small>
+            </div>
+            <div>
+                <span>{{ current_user.calories }}</span>
+                <small>Calories</small>
+            </div>
+        </div>
+    </div>
+    
+    <!-- ACTIVITY FORM -->
+<form method="POST"
+action="{{ url_for('update_activity') }}"
+class="glass-card mb-4">
+
+<h6>Add Today’s Activity</h6>
+
+<input type="number" name="steps" placeholder="Steps" class="form-control mb-2" required>
+
+<input type="number" name="calories" placeholder="Calories Burned" class="form-control mb-2" required>
+
+<input type="number" step="0.1" name="distance" placeholder="Distance (km)" class="form-control mb-2" required>
+
+<input type="number" name="workouts" placeholder="Workouts_Completed" class="form-control mb-2" required>
+
+<button class="btn btn-primary w-100">Update</button>
+
+</form>
+    <!-- KPI CARDS -->
+    <div class="row g-4 mt-2">
+
+        <div class="col-md-3">
+            <div class="kpi-card">
+                <div class="icon">👟</div>
+                <h3>{{ current_user.steps }}</h3>
+                <p>Steps Today</p>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="kpi-card">
+                <div class="icon">🔥</div>
+                <h3>{{ current_user.calories }}</h3>
+                <p>Calories Burned</p>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="kpi-card">
+                <div class="icon">🏋️</div>
+                <h3>{{ current_user.workouts_completed }}</h3>
+                <p>Workouts</p>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="kpi-card">
+                <div class="icon">📏</div>
+                <h3>{{ "%.1f"|format(current_user.distance) }} km</h3>
+                <p>Distance</p>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- PROGRESS SECTION -->
+    <div class="row g-4 mt-3">
+
+        <!-- Circular progress -->
+        <div class="col-md-4">
+            <div class="glass-card text-center">
+                <h6>Steps Goal</h6>
+                <div class="circle" data-percent="{{ step_percent }}">
+                <span>{{ step_percent }}%</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="glass-card text-center">
+                <h6>Calories Goal</h6>
+                <div class="circle" data-percent="{{ calorie_percent }}">
+                <span>{{ calorie_percent }}%</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="glass-card text-center">
+                <h6>Workout Goal</h6>
+                <div class="circle" data-percent="{{ workout_percent }}">
+                <span>{{ workout_percent }}%</span>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- ACTIVITY -->
+    <div class="activity-card mt-4">
+    <h5 class="mb-3">Today's Activity</h5>
+
+    <!-- Steps -->
+    <div class="activity-row">
+        <span>Steps</span>
+        <div class="bar">
+            <div class="progress-fill" data-width="{{ step_percent }}"></div>
+        </div>
+    </div>
+
+    <!-- Calories -->
+    <div class="activity-row">
+        <span>Calories</span>
+        <div class="bar">
+            <div class="progress-fill" data-width="{{ calorie_percent }}"></div>
+        </div>
+    </div>
+
+    <!-- Distance -->
+    <div class="activity-row">
+        <span>Distance</span>
+        <div class="bar">
+            <div class="progress-fill" data-width="{{ distance_percent }}"></div>
+        </div>
+    </div>
+</div>
+</div>
+{% endblock %}
