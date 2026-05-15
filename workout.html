@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>💪 Workout Plans</h2>
+
+<div class="workout-grid">
+
+  <div class="workout-card">
+    <h3>Push-ups</h3>
+    <p>15 reps</p>
+    <img src="{{ url_for('static', filename='images/workouts/push_ups.gif') }}" alt="push_ups">
+
+    <a href="{{ url_for('complete_workout') }}" class="btn btn-success">
+    Mark as Done ✅
+    </a>
+
+  </div>
+
+  <div class="workout-card">
+    <h3>Squats</h3>
+    <p>20 reps</p>
+    <img src="{{ url_for('static', filename='images/workouts/squat.gif') }}" alt="squats">
+
+    <a href="{{ url_for('complete_workout') }}" class="btn btn-success">
+    Mark as Done ✅
+    </a>
+  </div>
+
+  <div class="workout-card">
+    <h3>Lunges</h3>
+    <p>12 reps</p>
+    <img src="{{ url_for('static', filename='images/workouts/lunges.gif') }}" alt="lunges">
+
+    <a href="{{ url_for('complete_workout') }}" class="btn btn-success">
+    Mark as Done ✅
+    </a>
+  </div>
+
+  <div class="workout-card">
+    <h3>Deadlift</h3>
+    <p>10 reps</p>
+    <img src="{{ url_for('static', filename='images/workouts/deadlift.gif') }}" alt="deadlift">
+    <a href="{{ url_for('complete_workout') }}" class="btn btn-success">
+    Mark as Done ✅
+    </a>
+  </div>
+
+</div>
+<!-- 🔵 LOG WORKOUT FORM -->
+
+<h3>Log Custom Workout</h3>
+
+<form action="{{ url_for('log_workout') }}" method="POST">
+
+<input type="text" name="exercise" placeholder="Exercise Name" required>
+
+<input type="number" name="sets" placeholder="Sets" required>
+
+<input type="number" name="reps" placeholder="Reps" required>
+
+<button class="btn btn-primary">Save Workout</button>
+
+</form>
+
+
+<!-- 🔵 WORKOUT HISTORY -->
+
+<h3>Your Workout History</h3>
+
+<table class="table">
+
+<tr>
+<th>Exercise</th>
+<th>Sets</th>
+<th>Reps</th>
+<th>Date</th>
+</tr>
+
+{% for workout in workouts %}
+
+<tr>
+<td>{{ workout.exercise_name }}</td>
+<td>{{ workout.sets }}</td>
+<td>{{ workout.reps }}</td>
+<td>{{ workout.date.strftime('%Y-%m-%d') }}</td>
+</tr>
+
+{% endfor %}
+
+</table>
+{% endblock %}
