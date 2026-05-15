@@ -1,0 +1,192 @@
+{% extends "base.html" %}
+{% block content %}
+
+<style>
+
+.progress-page{
+    min-height:100vh;
+    background:#f3f6fb;
+    padding-top:40px;
+}
+
+.glass-card{
+    background:#ffffff;
+    border-radius:20px;
+    padding:30px;
+    box-shadow:0 10px 30px rgba(0,0,0,0.1);
+}
+
+.progress-ring{
+    position:relative;
+    width:200px;
+    height:200px;
+    margin:auto;
+}
+
+.progress-ring svg{
+    transform:rotate(-90deg);
+}
+
+.progress-ring circle{
+    fill:none;
+    stroke-width:15;
+}
+
+.progress-bg{
+    stroke:#e6e6e6;
+}
+
+.progress-bar{
+    stroke:#00c896;
+    stroke-linecap:round;
+    stroke-dasharray:565;
+    stroke-dashoffset:565;
+    transition:stroke-dashoffset 1.5s ease;
+}
+
+.progress-text{
+    position:absolute;
+    top:50%;
+    left:50%;
+    transform:translate(-50%,-50%);
+    text-align:center;
+}
+
+</style>
+
+<div class="progress-page">
+
+<h2 class="text-center mb-4">📊 Progress Dashboard</h2>
+
+<div class="row g-4 justify-content-center">
+
+<!-- GOAL FORM -->
+<div class="col-md-4">
+<div class="glass-card">
+
+<form method="POST" action="{{ url_for('set_goal') }}">
+
+<div class="mb-3">
+<label class="form-label">Goal Type</label>
+
+<select name="goal_type" class="form-select">
+    <option value="Calories Burn">🔥 Calories Burn</option>
+    <option value="Step Goal">👟 Step Goal</option>
+    <option value="Distance Goal">📏 Distance Goal</option>
+    <option value="Workout Goal">💪 Workout Goal</option>
+</select>
+</div>
+
+<div class="mb-3">
+<label class="form-label">Target Value</label>
+
+<input type="number"
+name="goal_target"
+class="form-control"
+placeholder="Enter target "
+required>
+</div>
+
+<button class="btn btn-success w-100">Set Goal</button>
+
+</form>
+
+{% if goal_type and goal_target %}
+
+<hr>
+
+<h5>Your Goal</h5>
+
+<p class="text-primary">
+<strong>{{ goal_type }}</strong> - Target: {{ goal_target }}
+</p>
+
+{% endif %}
+
+</div>
+</div>
+
+<!-- PROGRESS CARD -->
+{% if goal_target %}
+
+<div class="col-md-4">
+
+<div class="glass-card text-center"
+     id="progressData"
+     data-percent="{{ progress_percent|default(0) }}"
+     data-current="{{ current_value|default(0) }}"
+     data-target="{{ goal_target|default(0) }}">
+
+<h4 class="mb-4">Goal Progress</h4>
+
+<div class="progress-ring">
+
+<svg width="200" height="200">
+<circle class="progress-bg" cx="100" cy="100" r="90"></circle>
+<circle class="progress-bar" cx="100" cy="100" r="90"></circle>
+</svg>
+
+<div class="progress-text">
+
+<h2 id="progressPercent">
+{{ progress_percent|default(0) }}%
+</h2>
+
+<p>
+{% if goal_type == "Calories Burn" %}
+    🔥 {{ current_value|default(0) }} / {{ goal_target|default(0) }} Calories
+{% elif goal_type == "Step Goal" %}
+    👟 {{ current_value|default(0) }} / {{ goal_target|default(0) }} Steps
+{% elif goal_type == "Distance Goal" %}
+    📏 {{ current_value|default(0) }} / {{ goal_target|default(0) }} km
+{% elif goal_type == "Workout Goal" %}
+    💪 {{ current_value|default(0) }} / {{ goal_target|default(0) }} Workouts
+{% endif %}
+</p>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+{% endif %}
+
+<!-- OVERALL FITNESS SCORE -->
+<div class="col-md-4">
+    <div class="glass-card text-center mt-4">
+        <h5>Overall Fitness Score 🎯</h5>
+        <h2>{{ overall_score }}%</h2>
+    </div>
+</div>
+
+</div>
+</div>
+
+<script>
+
+const progressElement = document.getElementById("progressData");
+
+let percent = 0;
+let current = 0;
+
+if(progressElement){
+    percent = parseFloat(progressElement.dataset.percent);
+    current = parseFloat(progressElement.dataset.current);
+}
+
+/* PROGRESS RING */
+
+const circle = document.querySelector(".progress-bar");
+
+if(circle){
+    const circumference = 565;
+    const offset = circumference - (percent/100)*circumference;
+    circle.style.strokeDashoffset = offset;
+}
+
+</script>
+
+{% endblock %}
