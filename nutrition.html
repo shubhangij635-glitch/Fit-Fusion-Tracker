@@ -1,0 +1,135 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="nutrition-wrapper">
+
+  <div class="nutrition-panel">
+
+    <!-- HEADER -->
+    <div class="nutrition-header">
+      <h2>🍏 Nutrition Plan</h2>
+      <a href="{{ url_for('nutrition') }}" class="refresh-btn">Refresh Data</a>
+    </div>
+
+
+    <!-- ADD MEAL FORM -->
+    <form method="POST" class="meal-form">
+
+      <select name="meal" required>
+        <option value="">Select Meal</option>
+        <option value="Breakfast">Breakfast</option>
+        <option value="Lunch">Lunch</option>
+        <option value="Dinner">Dinner</option>
+        <option value="Snack">Snack</option>
+      </select>
+
+      <input id="foodInput" name="food" placeholder="Enter food (ex: banana)" required>
+
+      <input id="calories" name="calories" placeholder="Calories" required>
+
+      <input id="protein" name="protein" placeholder="Protein" required>
+
+      <input id="carbs" name="carbs" placeholder="Carbs" required>
+
+      <input id="fats" name="fats" placeholder="Fats" required>
+
+      <button type="submit">Add Meal</button>
+
+    </form>
+
+
+    <!-- TABLE -->
+    <table class="nutrition-table">
+      <thead>
+        <tr>
+          <th>Meal</th>
+          <th>Food</th>
+          <th>Calories</th>
+          <th>Protein</th>
+          <th>Carbs</th>
+          <th>Fats</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        {% for meal in meals %}
+        <tr>
+          <td>{{ meal.meal }}</td>
+          <td>{{ meal.food }}</td>
+          <td>{{ meal.calories }}</td>
+          <td>{{ meal.protein }}g</td>
+          <td>{{ meal.carbs }}g</td>
+          <td>{{ meal.fats }}g</td>
+          <td>
+            <a href="{{ url_for('delete_meal', meal_id=meal.id) }}">Delete</a>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+
+    <!-- PROGRESS -->
+    <div class="progress-section">
+
+      <div class="progress-item">
+        <span>Daily Calorie Intake</span>
+        <div class="bar">
+          <div class="fill" style="width: {{ progress_percentage }}%"></div>
+        </div>
+      </div>
+
+      <div class="progress-item">
+        <span>Protein Goal</span>
+        <div class="bar">
+          <div class="fill blue" style="width: {{ (total_protein/150*100)|round(0) }}%"></div>
+        </div>
+      </div>
+
+      <div class="progress-item">
+        <span>Carbs Goal</span>
+        <div class="bar">
+          <div class="fill blue" style="width: {{ (total_carbs/250*100)|round(0) }}%"></div>
+        </div>
+      </div>
+
+      <div class="progress-item">
+        <span>Fats Goal</span>
+        <div class="bar">
+          <div class="fill blue" style="width: {{ (total_fats/70*100)|round(0) }}%"></div>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<!-- JAVASCRIPT FOR AUTO FOOD NUTRITION -->
+<script>
+
+const foodInput = document.getElementById("foodInput");
+
+foodInput.addEventListener("blur", async () => {
+
+    const food = foodInput.value;
+
+    const response = await fetch(`/search_food?q=${food}`);
+
+    if (!response.ok) return;
+
+    const data = await response.json();
+
+    document.getElementById("calories").value = Math.round(data.calories);
+    document.getElementById("protein").value = Math.round(data.protein);
+    document.getElementById("carbs").value = Math.round(data.carbs);
+    document.getElementById("fats").value = Math.round(data.fats);
+
+});
+
+</script>
+
+{% endblock %}
